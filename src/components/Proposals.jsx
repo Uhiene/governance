@@ -1,11 +1,9 @@
-import { useGlobalState, generateData } from "../store";
 
-const Proposals = () => {
-  const [proposals] = useGlobalState("proposals");
+const Proposals = ({proposals}) => {
   return (
     <div className=" md:w-[65%] h-fit space-y-6 text-white">
       <h1 className="font-semibold border-b border-gray-600 py-4 text-xl md:text-md text-center md:text-start text-black">Proposals</h1>
-      {generateData(5).map((prop, i) => (
+      {proposals.map((prop, i) => (
         <div className="bg-[#14152A] rounded-md p-6 py-4 space-y-2" key={i}>
           <div className="md:flex gap-2 items-center space-y-4 md:space-y-0">
           {prop.status == 1 ? (
@@ -23,9 +21,9 @@ const Proposals = () => {
               </p>
             )}
               
-              <p className="font-thin text-sm md:text-xs">{prop.time}</p>
+              <p className="font-thin text-sm md:text-xs">{prop.timestamp}</p>
           </div>
-          <h1 className="font-medium text-md">{prop.heading}</h1>
+          <h1 className="font-medium text-md">{prop.title}</h1>
           <p className="text-sm font-light truncate">{prop.descrition} </p>
         </div>
       ))}
