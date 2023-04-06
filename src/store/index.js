@@ -2,7 +2,11 @@ import { createGlobalState } from "react-hooks-global-state";
 
 const { getGlobalState, useGlobalState, setGlobalState } = createGlobalState({
   createProposalModal: "scale-0",
+  editProposalModal: "scale-0",
   proposals: [],
+  proposal: null,
+  currentUser: null,
+  authed: false,
 });
 
 const generateData = (n) => {

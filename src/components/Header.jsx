@@ -1,21 +1,45 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logOut } from "../services/firebase";
+import { setGlobalState, useGlobalState } from "../store";
 
 const Header = () => {
+  const [currentUser] = useGlobalState("currentUser");
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await logOut()
+          .then(() => {
+            setGlobalState("currentUser", null);
+            navigate("/signup")
+            resolve();
+          })
+          .catch((error) => reject(error));
+      }),
+      {
+        pending: "logging out...",
+        success: "logged out successfully",
+        error: "encountered error",
+      }
+    );
+  };
   return (
     <div className="p-5 md:p-0 flex justify-between items-center">
       <Link to={"/"}>
         <p>governance</p>
       </Link>
       <div className="flex space-x-6">
-        <div className="hidden lg:flex">
-          <button
-            className="bg-[#14152A] bg-opacity-75 text-md font-light
-              p-3 w-fit px-4 md:px-8 rounded-full text-white flex hover:to-[#E77FBD]
-              transform transition-transform duration-30 justify-center items-center"
-          >
-            <p className="text-md text-white font-bold">Login</p>
+        {!currentUser ? (
+          <Link to={"/signup"} className="underline text-blue-500">
+            Login
+          </Link>
+        ) : (
+          <button className="underline text-blue-500" onClick={handleLogout}>
+            Logout
           </button>
-        </div>
+        )}
       </div>
     </div>
   );

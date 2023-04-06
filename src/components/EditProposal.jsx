@@ -1,30 +1,44 @@
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { createProposal } from "../services/firebase";
+import { updateProposal } from "../services/firebase";
 import { setGlobalState, useGlobalState } from "../store";
 
-const CreateProposal = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [createProposalModal] = useGlobalState("createProposalModal");
+const EditProposal = () => {
+  const [proposal] = useGlobalState("proposal")
+  const [title, setTitle] = useState(proposal.title);
+  const [description, setDescription] = useState(proposal.description);
+  const [editProposalModal] = useGlobalState("editProposalModal");
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const params = {
-      owner: "princessuhiene@gmail.com",
       title,
       description,
     }
 
- 
+    await toast.promise(
+      new Promise(async (resolve,reject) => {
+        await updateProposal(proposal.id, params)
+        .then(async () => {
+          setGlobalState("editProposalModal", "scale-0")
+          resolve()
+        })
+        .catch((error) => reject(error))
+      }),
+      {
+        pending: "updating...",
+        success: "proposal updated successfully",
+        error: "encountered error"
+      }
+    )
   }
 
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
       items-center justify-center bg-black bg-opacity-50
-      transform transition-transform duration-300 ${createProposalModal}`}
+      transform transition-transform duration-300 ${editProposalModal}`}
     >
       <div
         className="bg-white  shadow-lg shadow-[#E77FBD] rounded-xl
@@ -32,9 +46,9 @@ const CreateProposal = () => {
       >
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center">
-            <p className="font-semibold ">Create a Proposal</p>
+            <p className="font-semibold ">Edit Proposal</p>
             <button
-              onClick={() => setGlobalState("createProposalModal", "scale-0")}
+              onClick={() => setGlobalState("editProposalModal", "scale-0")}
               type="button"
               className="border-0 bg-transparent focus:outline-none text-black hover:text-red-500"
             >
@@ -90,4 +104,4 @@ const CreateProposal = () => {
   );
 };
 
-export default CreateProposal;
+export default EditProposal;
