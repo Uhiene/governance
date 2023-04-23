@@ -17,7 +17,21 @@ const CreateProposal = () => {
       description,
     }
 
- 
+    await toast.promise(
+      new Promise(async (resolve,reject) => {
+        await createProposal(params)
+        .then(async () => {
+          setGlobalState("createProposalModal", "scale-0")
+          resolve()
+        })
+        .catch((error) => reject(error))
+      }),
+      {
+        pending: "creating...",
+        success: "proposal created successfully",
+        error: "encountered error"
+      }
+    )
   }
 
   return (

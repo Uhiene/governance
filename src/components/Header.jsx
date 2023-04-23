@@ -30,6 +30,9 @@ const Header = () => {
       <Link to={"/"}>
         <p>governance</p>
       </Link>
+      <Link to={"/documents"}>
+        <p>documents</p>
+      </Link>
       <div className="flex space-x-6">
         {!currentUser ? (
           <Link to={"/signup"} className="underline text-blue-500">

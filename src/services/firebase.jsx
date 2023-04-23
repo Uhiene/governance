@@ -8,6 +8,7 @@ import {
   getFirestore,
   updateDoc,
 } from "firebase/firestore";
+import { ref, getStorage, uploadBytes, getDownloadURL } from "firebase/storage";
 import { setGlobalState } from "../store";
 import {
   getAuth,
@@ -30,6 +31,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const auth = getAuth();
+
+const storage = getStorage(app);
 
 const createProposal = async (params) => {
   return new Promise(async (resolve, reject) => {
@@ -80,6 +83,23 @@ const updateProposal = async (id, params) => {
   });
 };
 
+const uploadFile = async (file, name) => {
+  return new Promise(async (resolve, reject) => {
+    const storageRef = ref(storage, `myFolder/${name}`);
+    uploadBytes(storageRef, file)
+      .then(async (snapShot) => {
+        if (snapShot.ref) {
+          await getDownloadURL(snapShot.ref)
+            .then((fileUrl) => {
+              resolve(fileUrl);
+            })
+            .catch(() => reject());
+        }
+      })
+      .catch(() => reject());
+  });
+};
+
 const signupUser = async (email, password) => {
   return new Promise(async (resolve, reject) => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -123,5 +143,6 @@ export {
   signupUser,
   signinUser,
   logOut,
-  isUserLoggedIn
+  isUserLoggedIn,
+  uploadFile,
 };

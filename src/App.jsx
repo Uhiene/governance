@@ -7,6 +7,7 @@ import { setGlobalState } from "./store";
 import AuthGuard from "./utils/AuthGuard";
 import Governance from "./views/Governance";
 import Signup from "./views/Signup";
+import Documents from "./views/Documents";
 
 const App = () => {
   useEffect(async () => {
@@ -26,6 +27,7 @@ const App = () => {
       <Routes>
         <Route element={<AuthGuard/>}>
           <Route path={"/"} element={<Governance />} />
+          <Route path={"/documents"} element={<Documents />} />
         </Route>
         <Route path={"/signup"} element={<Signup />} />
       </Routes>
